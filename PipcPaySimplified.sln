@@ -1,11 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{657E162F-AA85-4CBC-ABA1-8B4EFC66014A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipcPaySimplified.Domain", "src\PipcPaySimplified.Domain\PipcPaySimplified.Domain.csproj", "{B7B0678E-9B82-4472-AA3C-B8251CF16676}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipcPaySimplified.Domain", "src\core\PipcPaySimplified.Domain\PipcPaySimplified.Domain.csproj", "{B7B0678E-9B82-4472-AA3C-B8251CF16676}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8C03DBDF-F389-4603-A4C8-A199303458DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{34A76600-226D-4B60-8186-B2B88B33D4B1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{1E4B1881-1CC4-4CAD-8F50-95EFA636AA60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipcPaySimplified.Api", "src\presentation\PipcPaySimplified.Api\PipcPaySimplified.Api.csproj", "{C28E842E-533C-44E7-81AE-26DD4AECE814}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipcPaySimplified.Application", "src\core\PipcPaySimplified.Application\PipcPaySimplified.Application.csproj", "{575DEC15-00D0-4C35-A499-A5F309801E4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipcPaySimplified.Infra.Data", "src\infrastructure\PipcPaySimplified.Infra.Data\PipcPaySimplified.Infra.Data.csproj", "{C8A0CF3E-AE0D-47C7-9F88-FAEE703225A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipcPaySimplified.Infra.ExternalService", "src\infrastructure\PipcPaySimplified.Infra.ExternalService\PipcPaySimplified.Infra.ExternalService.csproj", "{5C49B296-DAA7-4D8B-8BFD-006A569B2A1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicPaySimplified.Common.Utilities", "src\common\PicPaySimplified.Common.Utilities\PicPaySimplified.Common.Utilities.csproj", "{D3DD22F2-AB60-43FE-AEB5-716D813E5AF6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F73A47C2-ADA5-41D2-817A-67ADA57C3892}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicPaySimplified.Infra.Messaging", "src\infrastructure\PicPaySimplified.Infra.Messaging\PicPaySimplified.Infra.Messaging.csproj", "{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,11 +37,45 @@ Global
 		{B7B0678E-9B82-4472-AA3C-B8251CF16676}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7B0678E-9B82-4472-AA3C-B8251CF16676}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7B0678E-9B82-4472-AA3C-B8251CF16676}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C28E842E-533C-44E7-81AE-26DD4AECE814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C28E842E-533C-44E7-81AE-26DD4AECE814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C28E842E-533C-44E7-81AE-26DD4AECE814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C28E842E-533C-44E7-81AE-26DD4AECE814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{575DEC15-00D0-4C35-A499-A5F309801E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{575DEC15-00D0-4C35-A499-A5F309801E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{575DEC15-00D0-4C35-A499-A5F309801E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{575DEC15-00D0-4C35-A499-A5F309801E4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8A0CF3E-AE0D-47C7-9F88-FAEE703225A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8A0CF3E-AE0D-47C7-9F88-FAEE703225A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8A0CF3E-AE0D-47C7-9F88-FAEE703225A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8A0CF3E-AE0D-47C7-9F88-FAEE703225A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C49B296-DAA7-4D8B-8BFD-006A569B2A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C49B296-DAA7-4D8B-8BFD-006A569B2A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C49B296-DAA7-4D8B-8BFD-006A569B2A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C49B296-DAA7-4D8B-8BFD-006A569B2A1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3DD22F2-AB60-43FE-AEB5-716D813E5AF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3DD22F2-AB60-43FE-AEB5-716D813E5AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3DD22F2-AB60-43FE-AEB5-716D813E5AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3DD22F2-AB60-43FE-AEB5-716D813E5AF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B7B0678E-9B82-4472-AA3C-B8251CF16676} = {657E162F-AA85-4CBC-ABA1-8B4EFC66014A}
+		{B7B0678E-9B82-4472-AA3C-B8251CF16676} = {8C03DBDF-F389-4603-A4C8-A199303458DD}
+		{8C03DBDF-F389-4603-A4C8-A199303458DD} = {657E162F-AA85-4CBC-ABA1-8B4EFC66014A}
+		{34A76600-226D-4B60-8186-B2B88B33D4B1} = {657E162F-AA85-4CBC-ABA1-8B4EFC66014A}
+		{1E4B1881-1CC4-4CAD-8F50-95EFA636AA60} = {657E162F-AA85-4CBC-ABA1-8B4EFC66014A}
+		{C28E842E-533C-44E7-81AE-26DD4AECE814} = {1E4B1881-1CC4-4CAD-8F50-95EFA636AA60}
+		{575DEC15-00D0-4C35-A499-A5F309801E4A} = {8C03DBDF-F389-4603-A4C8-A199303458DD}
+		{C8A0CF3E-AE0D-47C7-9F88-FAEE703225A5} = {34A76600-226D-4B60-8186-B2B88B33D4B1}
+		{5C49B296-DAA7-4D8B-8BFD-006A569B2A1A} = {34A76600-226D-4B60-8186-B2B88B33D4B1}
+		{D3DD22F2-AB60-43FE-AEB5-716D813E5AF6} = {F73A47C2-ADA5-41D2-817A-67ADA57C3892}
+		{F73A47C2-ADA5-41D2-817A-67ADA57C3892} = {657E162F-AA85-4CBC-ABA1-8B4EFC66014A}
+		{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27} = {34A76600-226D-4B60-8186-B2B88B33D4B1}
 	EndGlobalSection
 EndGlobal

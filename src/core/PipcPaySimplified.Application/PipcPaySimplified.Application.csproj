@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\PicPaySimplified.Common.Utilities\PicPaySimplified.Common.Utilities.csproj" />
+    <ProjectReference Include="..\..\infrastructure\PicPaySimplified.Infra.Utilities\PicPaySimplified.Infra.Utilities.csproj" />
+    <ProjectReference Include="..\PipcPaySimplified.Domain\PipcPaySimplified.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
