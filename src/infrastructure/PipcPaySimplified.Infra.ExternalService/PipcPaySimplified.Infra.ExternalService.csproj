@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polly" Version="8.5.2" />
+    <PackageReference Include="Refit" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\PicPaySimplified.Common.Utilities\PicPaySimplified.Common.Utilities.csproj" />
+    <ProjectReference Include="..\..\core\PipcPaySimplified.Application\PipcPaySimplified.Application.csproj" />
+    <ProjectReference Include="..\PicPaySimplified.Infra.Messaging\PicPaySimplified.Infra.Messaging.csproj" />
+    <ProjectReference Include="..\PicPaySimplified.Infra.Utilities\PicPaySimplified.Infra.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>
