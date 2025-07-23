@@ -370,3 +370,4 @@ elastic/.docker/es*
 .docker/filebeat/registry/*
 .docker/filebeat/meta.json
 /src/presentation/GM.ProjectManagement.Api/appsettings.Development.json
+/docker-compose.local.yml
