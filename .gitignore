@@ -373,3 +373,5 @@ elastic/.docker/es*
 /docker-compose.local.yml
 /docker-compose-dev.yml
 /src/presentation/PipcPaySimplified.Api/appsettings.Development.json
+/src/presentation/PipcPaySimplified.Api/appsettings.Development.json
+/src/presentation/PipcPaySimplified.Api/appsettings.Development.json
