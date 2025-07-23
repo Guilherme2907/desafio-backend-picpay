@@ -29,8 +29,8 @@ internal class Program
 
         builder.Services.AddDbContext<PicPaySimplifiedDbContext>(
             options => options.UseMySql(
-                "Server=catalogdb;Port=3306;Database=PicpaySimplified;Uid=root;Pwd=root",
-                ServerVersion.AutoDetect("Server=catalogdb;Port=3306;Database=PicpaySimplified;Uid=root;Pwd=root")
+                builder.Configuration.GetConnectionString("DefaultConnection"),
+                ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
             )
         );
 
