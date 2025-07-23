@@ -1,0 +1,43 @@
+name: CD - Deploy to Azure
+
+on:
+  workflow_dispatch: # Apenas disparo manual para controle
+
+jobs:
+  deploy-infra-and-app:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: 'Checkout do código'
+        uses: actions/checkout@v4
+
+      - name: 'Log in to Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Setup Terraform'
+        uses: hashicorp/setup-terraform@v2
+
+      - name: 'Terraform Init'
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: 'Terraform Apply'
+        run: terraform apply -auto-approve -var="mysql_admin_password=${{ secrets.MYSQL_ADMIN_PASSWORD }}"
+        working-directory: ./terraform
+
+      - name: 'Restart App Service to pull new image'
+        run: |
+          # Obter o nome do App Service e Resource Group dinamicamente após a criação
+          APP_NAME=$(az webapp list --query "[?contains(name, 'app-picpay-challenge')].name" -o tsv)
+          RG_NAME=$(az webapp list --query "[?contains(name, 'app-picpay-challenge')].resourceGroup" -o tsv)
+          
+          if [ -z "$APP_NAME" ]; then
+            echo "App Service não encontrado. Verifique se o terraform apply foi bem sucedido."
+            exit 1
+          fi
+
+          echo "Reiniciando o App Service: $APP_NAME no grupo $RG_NAME"
+          az webapp restart --name $APP_NAME --resource-group $RG_NAME
