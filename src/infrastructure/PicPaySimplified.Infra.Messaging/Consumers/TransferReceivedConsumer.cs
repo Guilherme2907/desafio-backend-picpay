@@ -17,7 +17,7 @@ public class TransferReceivedConsumer : BackgroundService
     private readonly string _queue;
     private readonly string _exchange;
     private const string ROUTING_KEY = "transfer.received";
-    private IChannel _channel;
+    private IChannel _channel = null!;
     private readonly INotifyService _notifyService;
     private readonly IServiceScopeFactory _scopeFactory;
 
@@ -59,7 +59,7 @@ public class TransferReceivedConsumer : BackgroundService
 
             await _channel.BasicAckAsync(@event.DeliveryTag, false);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await _channel.BasicNackAsync(@event.DeliveryTag, false, true);
         }

@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using PicPaySimplified.Infra.Messaging.Configurations;
 using PicPaySimplified.Infra.Messaging.Consumers;
 using PicPaySimplified.Infra.Messaging.Interfaces;
 using PicPaySimplified.Infra.Messaging.Producer;
+using PipcPaySimplified.Api.Configurations;
 using PipcPaySimplified.Application;
 using PipcPaySimplified.Application.EventHandlers;
 using PipcPaySimplified.Application.Interfaces;
@@ -16,7 +15,6 @@ using PipcPaySimplified.Infra.Data;
 using PipcPaySimplified.Infra.Data.Repositories;
 using PipcPaySimplified.Infra.ExternalService.RestEase;
 using PipcPaySimplified.Infra.ExternalService.Services;
-using RabbitMQ.Client;
 using Refit;
 
 internal class Program
@@ -31,8 +29,8 @@ internal class Program
 
         builder.Services.AddDbContext<PicPaySimplifiedDbContext>(
             options => options.UseMySql(
-                "Server=localhost;Port=3307;Database=PicpaySimplified;Uid=root;Pwd=root",
-                ServerVersion.AutoDetect("Server=localhost;Port=3307;Database=PicpaySimplified;Uid=root;Pwd=root")
+                "Server=catalogdb;Port=3306;Database=PicpaySimplified;Uid=root;Pwd=root",
+                ServerVersion.AutoDetect("Server=catalogdb;Port=3306;Database=PicpaySimplified;Uid=root;Pwd=root")
             )
         );
 
@@ -61,21 +59,9 @@ internal class Program
                 builder.Configuration.GetSection(RabbitMQConfiguration.ConfigurationSection)
             );
 
-        builder.Services.AddSingleton(sp =>
-        {
-            var config = sp.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value;
+        builder.Services.AddRabbitMqConfiguration(builder.Configuration);
 
-            var factory = new ConnectionFactory
-            {
-                HostName = config.Hostname!,
-                Port = config.Port,
-                UserName = config.Username!,
-                Password = config.Password!
-
-            };
-
-            return Task.Run(() => factory.CreateConnectionAsync()).GetAwaiter().GetResult();
-        });
+        builder.Services.AddApplicationInsightsTelemetry(builder.Configuration);
 
         builder.Services.AddSingleton<ChannelManager>();
         

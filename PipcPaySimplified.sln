@@ -27,6 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F73A47
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicPaySimplified.Infra.Messaging", "src\infrastructure\PicPaySimplified.Infra.Messaging\PicPaySimplified.Infra.Messaging.csproj", "{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "env", "env", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,5 +82,8 @@ Global
 		{D3DD22F2-AB60-43FE-AEB5-716D813E5AF6} = {F73A47C2-ADA5-41D2-817A-67ADA57C3892}
 		{F73A47C2-ADA5-41D2-817A-67ADA57C3892} = {657E162F-AA85-4CBC-ABA1-8B4EFC66014A}
 		{6E20DE2F-AC99-48A1-8ECA-A0EA37F4DC27} = {34A76600-226D-4B60-8186-B2B88B33D4B1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34ABFF41-CA88-45CC-815F-F61372588848}
 	EndGlobalSection
 EndGlobal

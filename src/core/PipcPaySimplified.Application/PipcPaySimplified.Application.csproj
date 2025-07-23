@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\common\PicPaySimplified.Common.Utilities\PicPaySimplified.Common.Utilities.csproj" />
-    <ProjectReference Include="..\..\infrastructure\PicPaySimplified.Infra.Utilities\PicPaySimplified.Infra.Utilities.csproj" />
     <ProjectReference Include="..\PipcPaySimplified.Domain\PipcPaySimplified.Domain.csproj" />
   </ItemGroup>
 
