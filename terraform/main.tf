@@ -27,16 +27,6 @@ variable "app_service_plan_name" {
   default = "plan-picpay-challenge"
 }
 
-variable "app_service_name" {
-  type    = string
-  default = "app-picpay-challenge-${random_string.suffix.result}" # Nome único para o App Service
-}
-
-variable "mysql_server_name" {
-  type    = string
-  default = "mysql-picpay-challenge-${random_string.suffix.result}" # Nome único
-}
-
 variable "mysql_admin_user" {
   type      = string
   default   = "mysqladmin"
@@ -82,7 +72,7 @@ resource "azurerm_application_insights" "appinsights" {
 
 # 4. Banco de Dados MySQL Flexível
 resource "azurerm_mysql_flexible_server" "mysql" {
-  name                   = var.mysql_server_name
+  name                   = "mysql-picpay-challenge-${random_string.suffix.result}"
   resource_group_name    = azurerm_resource_group.rg.name
   location               = azurerm_resource_group.rg.location
   administrator_login    = var.mysql_admin_user
@@ -118,7 +108,7 @@ resource "azurerm_app_service_plan" "plan" {
 
 # 6. App Service (onde a aplicação vai rodar)
 resource "azurerm_linux_web_app" "appservice" {
-  name                = var.app_service_name
+  name                = "app-picpay-challenge-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_app_service_plan.plan.id
@@ -128,9 +118,6 @@ resource "azurerm_linux_web_app" "appservice" {
     # A variável 'docker_compose_content' será passada pelo pipeline
     linux_fx_version        = "COMPOSE|${filebase64("../docker-compose.yml")}"
     always_on               = true
-    application_stack {
-      docker_image_name = "rabbitmq:3-management" # Imagem dummy, o compose sobrescreve
-    }
   }
 
   app_settings = {
@@ -143,7 +130,7 @@ resource "azurerm_linux_web_app" "appservice" {
     # Nossas variáveis de aplicação
     "ACR_LOGIN_SERVER"                  = azurerm_container_registry.acr.login_server
     "IMAGE_TAG"                         = "latest" # Será atualizado no pipeline de CD
-    "DB_CONNECTION_STRING"              = "Server=${azurerm_mysql_flexible_server.mysql.name}.mysql.database.azure.com;Port=3306;Database=picpay_challenge;Uid=${azurerm_mysql_flexible_server.mysql.administrator_login}@${azurerm_mysql_flexible_server.mysql.name};Pwd=${var.mysql_admin_password};"
+    "DB_CONNECTION_STRING"              = "Server=${azurerm_mysql_flexible_server.mysql.fqdn};Port=3306;Database=picpay_challenge;Uid=${azurerm_mysql_flexible_server.mysql.administrator_login};Pwd=${var.mysql_admin_password};"
     "APPINSIGHTS_CONNECTION_STRING"     = azurerm_application_insights.appinsights.connection_string
   }
 
