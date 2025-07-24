@@ -74,7 +74,6 @@ resource "azurerm_mysql_flexible_server" "mysql" {
   administrator_password = var.mysql_admin_password
   sku_name               = "B_Standard_B1ms" # SKU de baixo custo para desenvolvimento
   version                = "8.0.21"
-  storage_gb             = 32 # Tamanho do disco em GB
 }
 
 resource "azurerm_mysql_flexible_server_firewall_rule" "allow_azure" {
