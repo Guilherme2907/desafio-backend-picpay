@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "rg-picpay-simplified"
-    storage_account_name = "acrpicpaysimplified"
+    storage_account_name = "tfstatepicpay"
     container_name       = "tfstate"
     key                  = "picpay-simplified.terraform.tfstate"
   }
