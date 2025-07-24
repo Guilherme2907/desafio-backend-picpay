@@ -41,20 +41,20 @@ resource "random_string" "suffix" {
 }
 
 # 1. Grupo de Recursos
-# resource "azurerm_resource_group" "rg" {
-#   name     = "rg-picpay-simplified"
-#   location = var.location
-# }
+resource "azurerm_resource_group" "rg" {
+  name     = "rg-picpay-simplified"
+  location = var.location
+}
 
 # 2. Azure Container Registry (ACR) para armazenar as imagens Docker
-# resource "azurerm_container_registry" "acr" {
-#   # Defina o nome diretamente aqui, usando o recurso random_string
-#   name                = "acrpicpaysimplified"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   location            = azurerm_resource_group.rg.location
-#   sku                 = "Basic"
-#   admin_enabled       = true
-# }
+resource "azurerm_container_registry" "acr" {
+  # Defina o nome diretamente aqui, usando o recurso random_string
+  name                = "acrpicpaysimplified"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Basic"
+  admin_enabled       = true
+}
 
 
 # 3. Application Insights para monitoramento
