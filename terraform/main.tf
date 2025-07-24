@@ -14,7 +14,7 @@ provider "azurerm" {
 # Variáveis que serão passadas pelo Pipeline de CD
 variable "location" {
   type    = string
-  default = "Brazil South"
+  default = "East US"
 }
 
 variable "app_service_plan_name" {
