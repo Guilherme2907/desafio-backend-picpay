@@ -371,6 +371,14 @@ elastic/.docker/es*
 .docker/filebeat/meta.json
 /src/presentation/GM.ProjectManagement.Api/appsettings.Development.json
 /docker-compose.local.yml
+
+# Terraform files
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate*
+**/crash.log
+**/.env
 /docker-compose-dev.yml
 /src/presentation/PipcPaySimplified.Api/appsettings.Development.json
 /src/presentation/PipcPaySimplified.Api/appsettings.Development.json
