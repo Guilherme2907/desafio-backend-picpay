@@ -103,7 +103,7 @@ resource "azurerm_linux_web_app" "appservice" {
   site_config {
     # Configuração para usar Docker Compose
     # A variável 'docker_compose_content' será passada pelo pipeline
-    linux_fx_version        = "COMPOSE|${filebase64("../docker-compose.yml")}"
+    # linux_fx_version        = "COMPOSE|${filebase64("../docker-compose.yml")}"
     always_on               = true
   }
 
