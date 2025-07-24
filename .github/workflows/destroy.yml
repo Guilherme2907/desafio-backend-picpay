@@ -1,0 +1,39 @@
+name: DESTROY - Tear Down Azure Infrastructure
+
+on:
+  workflow_dispatch: # Apenas disparo manual para segurança máxima
+    inputs:
+      # Adicionamos uma confirmação explícita para evitar cliques acidentais
+      confirmation:
+        description: 'Digite "destroy" para confirmar a exclusão de TODOS os recursos.'
+        required: true
+
+jobs:
+  destroy-infra:
+    # Impede a execução se a confirmação não for digitada corretamente
+    if: github.event.inputs.confirmation == 'destroy'
+
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: 'Checkout do código'
+        uses: actions/checkout@v4
+
+      - name: 'Log in to Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Setup Terraform'
+        uses: hashicorp/setup-terraform@v2
+
+      - name: 'Terraform Init'
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: 'Terraform Destroy'
+        run: |
+          # Executa o comando destroy, passando a senha do BD a partir dos segredos
+          terraform destroy -auto-approve -var="mysql_admin_password=${{ secrets.MYSQL_ADMIN_PASSWORD }}"
+        working-directory: ./terraform

@@ -12,11 +12,6 @@ provider "azurerm" {
 }
 
 # Variáveis que serão passadas pelo Pipeline de CD
-variable "resource_group_name" {
-  type    = string
-  default = "rg-picpay-challenge"
-}
-
 variable "location" {
   type    = string
   default = "Brazil South"
@@ -47,14 +42,14 @@ resource "random_string" "suffix" {
 
 # 1. Grupo de Recursos
 resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
+  name     = "rg-picpay-simplified"
   location = var.location
 }
 
 # 2. Azure Container Registry (ACR) para armazenar as imagens Docker
 resource "azurerm_container_registry" "acr" {
   # Defina o nome diretamente aqui, usando o recurso random_string
-  name                = "acrpicpaychallenge${random_string.suffix.result}"
+  name                = "acrpicpaysimplified"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "Basic"
@@ -79,31 +74,25 @@ resource "azurerm_mysql_flexible_server" "mysql" {
   administrator_password = var.mysql_admin_password
   sku_name               = "B_Standard_B1ms" # SKU de baixo custo para desenvolvimento
   version                = "8.0.21"
-  storage_mb             = 32768
-
-  # Permite que outros serviços Azure acessem o banco
-  delegated_subnet_id = null
-  private_dns_zone_id = null
+  storage_gb             = 32 # Tamanho do disco em GB
 }
 
 resource "azurerm_mysql_flexible_server_firewall_rule" "allow_azure" {
   name                = "allow-azure-services"
-  server_id           = azurerm_mysql_flexible_server.mysql.id
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mysql_flexible_server.mysql.name
   start_ip_address    = "0.0.0.0"
   end_ip_address      = "0.0.0.0"
 }
 
 # 5. Plano do App Service (define a capacidade computacional)
-resource "azurerm_app_service_plan" "plan" {
+resource "azurerm_service_plan" "plan" {
   name                = var.app_service_plan_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  kind                = "Linux"
+  os_tye              = "Linux"
   reserved            = true # Necessário para containers Linux
-  sku {
-    tier = "Basic"
-    size = "B1"
-  }
+  sku_name		      = "B1" # Plano de baixo custo para desenvolvimento
 }
 
 # 6. App Service (onde a aplicação vai rodar)
@@ -111,7 +100,7 @@ resource "azurerm_linux_web_app" "appservice" {
   name                = "app-picpay-challenge-${random_string.suffix.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_app_service_plan.plan.id
+  service_plan_id     = azurerm_service_plan.plan.id
 
   site_config {
     # Configuração para usar Docker Compose
