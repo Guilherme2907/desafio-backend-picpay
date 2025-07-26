@@ -1,33 +1,33 @@
-name: CI - Build and Push Docker Image
+# name: CI - Build and Push Docker Image
 
-on:
-  push:
-    branches:
-      - main # Dispara a cada push na branch main
-  workflow_dispatch: # Permite disparar manualmente
+# on:
+#   push:
+#     branches:
+#       - main # Dispara a cada push na branch main
+#   workflow_dispatch: # Permite disparar manualmente
 
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: 'Checkout do código'
-        uses: actions/checkout@v4
+#     steps:
+#       - name: 'Checkout do código'
+#         uses: actions/checkout@v4
 
-      - name: 'Log in to Azure CLI'
-        uses: azure/login@v1
-        with:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
+#       - name: 'Log in to Azure CLI'
+#         uses: azure/login@v1
+#         with:
+#           creds: ${{secrets.AZURE_CREDENTIALS}}
 
-      - name: 'Build e Push da imagem para o Azure Container Registry'
-        run: |
-          # Obter o nome do ACR via Azure CLI (mais dinâmico)
-          ACR_NAME=$(az acr list --query "[?contains(name, ${{ACR_NAME}})].name" -o tsv)
+#       - name: 'Build e Push da imagem para o Azure Container Registry'
+#         run: |
+#           # Obter o nome do ACR via Azure CLI (mais dinâmico)
+#           ACR_NAME=$(az acr list --query "[?contains(name, ${{ACR_NAME}})].name" -o tsv)
           
-          # Se não encontrar, usar um nome padrão (ou falhar)
-          if [ -z "$ACR_NAME" ]; then
-            echo "ACR não encontrado. Verifique se a infraestrutura foi criada."
-            exit 1
-          fi
+#           # Se não encontrar, usar um nome padrão (ou falhar)
+#           if [ -z "$ACR_NAME" ]; then
+#             echo "ACR não encontrado. Verifique se a infraestrutura foi criada."
+#             exit 1
+#           fi
 
-          az acr build --registry $ACR_NAME --image picpay-api:latest .
+#           az acr build --registry $ACR_NAME --image picpay-api:latest .

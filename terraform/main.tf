@@ -21,7 +21,7 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "rabbimq_password" {
+variable "rabbitmq_password" {
   description = "Password for RabbitMQ"
   type        = string
   sensitive   = true
@@ -30,6 +30,10 @@ variable "rabbimq_password" {
 # # 1. ECR (Elastic Container Registry) para a imagem Docker
 resource "aws_ecr_repository" "picpay_api" {
   name = "picpay-api"
+}
+
+resource "aws_ecr_repository" "rabbitmq-picpay" {
+  name = "rabbitmq-picpay"
 }
 
 # 2. Rede (VPC, Subnets, etc.)
@@ -330,7 +334,7 @@ resource "aws_elastic_beanstalk_environment" "picpay_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RabbitMQ__Password"
-    value     = var.rabbimq_password
+    value     = var.rabbitmq_password
   }
 
   setting {
@@ -357,7 +361,7 @@ resource "aws_elastic_beanstalk_environment" "picpay_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RABBITMQ_DEFAULT_PASS"
-    value     = rabbimq_password
+    value     = var.rabbitmq_password
   }
 }
 

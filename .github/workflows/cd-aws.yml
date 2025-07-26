@@ -26,7 +26,7 @@ jobs:
 
       - name: Terraform Apply
         id: tf-apply # Dê um ID ao passo para referenciar suas saídas
-        run: terraform apply -auto-approve -var="db_password=${{ secrets.MYSQL_ADMIN_PASSWORD }}" -var="db_password=${{ secrets.RABBITMQ_PASSWORD }}" # Use DB_PASSWORD, mais genérico
+        run: terraform apply -auto-approve -var="db_password=${{ secrets.MYSQL_ADMIN_PASSWORD }}" -var="rabbitmq_password=${{ secrets.RABBITMQ_PASSWORD }}" # Use DB_PASSWORD, mais genérico
         working-directory: ./terraform
 
       # --- Passo 2: Preparar o pacote de deploy (MODIFICADO) ---
