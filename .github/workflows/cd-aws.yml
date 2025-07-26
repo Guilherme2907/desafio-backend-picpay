@@ -52,8 +52,8 @@ jobs:
           sed -i "s|__RABBITMQ_IMAGE_URL__|$RABBITMQ_IMAGE_URL|g" docker-compose.deploy.yml
 
       - name: Gerar pacote de deploy (zip)
-        # O pacote agora contém APENAS o docker-compose.yml
-        run: zip -r deploy-package.zip docker-compose.deploy.yml
+        # O pacote agora contém APENAS o docker-compose.yml e o Dockerfile
+        run: zip -r deploy-package.zip docker-compose.deploy.yml Dockerfile
 
       # --- Passo 3: Fazer o deploy para o Elastic Beanstalk ---
       - name: Deploy to Elastic Beanstalk
