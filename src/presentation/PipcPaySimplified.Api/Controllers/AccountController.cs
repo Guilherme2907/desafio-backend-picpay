@@ -34,4 +34,10 @@ public class AccountController(IMediator mediator, ILogger<AccountController> lo
             return StatusCode(500, ex.Message);
         }
     }
+
+    [HttpGet("health-check")]
+    public async Task<IActionResult> Transfer()
+    {
+        return Ok("PipcPaySimplified.Api is running");
+    }
 }

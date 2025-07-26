@@ -1,0 +1,127 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+# Variáveis que serão passadas pelo Pipeline de CD
+variable "location" {
+  type    = string
+  default = "East US"
+}
+
+variable "app_service_plan_name" {
+  type    = string
+  default = "plan-picpay-challenge"
+}
+
+variable "mysql_admin_user" {
+  type      = string
+  default   = "mysqladmin"
+  sensitive = true
+}
+
+variable "mysql_admin_password" {
+  type      = string
+  sensitive = true
+}
+
+# Gera um sufixo aleatório para garantir nomes únicos globalmente
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
+# 1. Grupo de Recursos
+resource "azurerm_resource_group" "rg" {
+  name     = "rg-picpay-simplified"
+  location = var.location
+}
+
+# 2. Azure Container Registry (ACR) para armazenar as imagens Docker
+resource "azurerm_container_registry" "acr" {
+  # Defina o nome diretamente aqui, usando o recurso random_string
+  name                = "tfstatepicpay"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Basic"
+  admin_enabled       = true
+}
+
+
+# 3. Application Insights para monitoramento
+resource "azurerm_application_insights" "appinsights" {
+  name                = "appi-picpay-challenge"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+}
+
+# 4. Banco de Dados MySQL Flexível
+resource "azurerm_mysql_flexible_server" "mysql" {
+  name                   = "mysql-picpay-challenge-${random_string.suffix.result}"
+  resource_group_name    = azurerm_resource_group.rg.name
+  location               = azurerm_resource_group.rg.location
+  administrator_login    = var.mysql_admin_user
+  administrator_password = var.mysql_admin_password
+  sku_name               = "B_Standard_B1ms" # SKU de baixo custo para desenvolvimento
+  version                = "8.0.21"
+}
+
+resource "azurerm_mysql_flexible_server_firewall_rule" "allow_azure" {
+  name                = "allow-azure-services"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mysql_flexible_server.mysql.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
+# 5. Plano do App Service (define a capacidade computacional)
+resource "azurerm_service_plan" "plan" {
+  name                = var.app_service_plan_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  os_type              = "Linux"
+  sku_name		      = "F1" # Plano de baixo custo para desenvolvimento
+}
+
+# 6. App Service (onde a aplicação vai rodar)
+resource "azurerm_linux_web_app" "appservice" {
+  name                = "app-picpay-challenge-${random_string.suffix.result}"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  service_plan_id     = azurerm_service_plan.plan.id
+
+  site_config {
+    # Configuração para usar Docker Compose
+    # A variável 'docker_compose_content' será passada pelo pipeline
+    # linux_fx_version        = "COMPOSE|${filebase64("../docker-compose.yml")}"
+    always_on               = true
+  }
+
+  app_settings = {
+    # Variáveis de ambiente injetadas no container
+    "DOCKER_REGISTRY_SERVER_URL"        = "https://${azurerm_container_registry.acr.login_server}"
+    "DOCKER_REGISTRY_SERVER_USERNAME"   = azurerm_container_registry.acr.admin_username
+    "DOCKER_REGISTRY_SERVER_PASSWORD"   = azurerm_container_registry.acr.admin_password
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
+
+    # Nossas variáveis de aplicação
+    "ACR_LOGIN_SERVER"                  = azurerm_container_registry.acr.login_server
+    "IMAGE_TAG"                         = "latest" # Será atualizado no pipeline de CD
+    "DB_CONNECTION_STRING"              = "Server=${azurerm_mysql_flexible_server.mysql.fqdn};Port=3306;Database=picpay_challenge;Uid=${azurerm_mysql_flexible_server.mysql.administrator_login};Pwd=${var.mysql_admin_password};"
+    "APPINSIGHTS_CONNECTION_STRING"     = azurerm_application_insights.appinsights.connection_string
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+}

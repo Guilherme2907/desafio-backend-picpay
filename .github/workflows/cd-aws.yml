@@ -1,0 +1,70 @@
+name: CD-AWS - Deploy to Elastic Beanstalk
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Apply
+        id: tf-apply # Dê um ID ao passo para referenciar suas saídas
+        run: terraform apply -auto-approve -var="db_password=${{ secrets.MYSQL_ADMIN_PASSWORD }}" -var="db_password=${{ secrets.RABBITMQ_PASSWORD }}" # Use DB_PASSWORD, mais genérico
+        working-directory: ./terraform
+
+      # --- Passo 2: Preparar o pacote de deploy (MODIFICADO) ---
+      - name: Gerar o docker-compose.yml final
+        run: |
+          # Obter o ID da conta AWS e Região
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          AWS_REGION="us-east-1"
+          IMAGE_TAG=${{ github.sha }}
+
+          # Construir as URLs completas das imagens
+          API_IMAGE_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/picpay-api:$IMAGE_TAG"
+          RABBITMQ_IMAGE_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/rabbitmq-picpay:$IMAGE_TAG"
+
+          echo "API Image URL: $API_IMAGE_URL"
+          echo "RabbitMQ Image URL: $RABBITMQ_IMAGE_URL"
+
+          # Copiar o template para o arquivo final
+          cp docker-compose.yml docker-compose.yml
+
+          # Substituir os placeholders no arquivo final
+          sed -i "s|__API_IMAGE_URL__|$API_IMAGE_URL|g" docker-compose.yml
+          sed -i "s|__RABBITMQ_IMAGE_URL__|$RABBITMQ_IMAGE_URL|g" docker-compose.yml
+
+      - name: Gerar pacote de deploy (zip)
+        # O pacote agora contém APENAS o docker-compose.yml
+        run: zip -r deploy-package.zip docker-compose.yml
+
+      # --- Passo 3: Fazer o deploy para o Elastic Beanstalk ---
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: "picpay-challenge-app"
+          environment_name: "picpay-challenge-env"
+          version_label: "v-${{ github.sha }}"
+          region: "us-east-1"
+          deployment_package: deploy-package.zip
+          # Opcional, mas bom: aguardar o ambiente ficar saudável
+          wait_for_environment_recovery: true

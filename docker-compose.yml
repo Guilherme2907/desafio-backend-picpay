@@ -1,38 +1,35 @@
+# docker-compose.deploy.yml
 version: '3.8'
 
 services:
+  # Serviço da sua API .NET
+  picpay-api:
+    image: "__API_IMAGE_URL__" # Placeholder que o CD vai substituir
+    ports:
+      - "80:8080" # Mapeia a porta 80 do Host para a 8080 do container
+    mem_limit: 512m
+    environment:
+      # O Beanstalk vai injetar as variáveis com estes nomes
+      - ASPNETCORE_ENVIRONMENT
+      - ConnectionStrings__DefaultConnection
+      - APPLICATIONINSIGHTS_CONNECTION_STRING
+      - RabbitMQ__Hostname
+      - RabbitMQ__Port
+      - RabbitMQ__Username
+      - RabbitMQ__Password
+      - RabbitMQ__Exchange
+      - RabbitMQ__TransferReceivedQueue
+    depends_on:
+      - rabbitmq
+
+  # Serviço do RabbitMQ
   rabbitmq:
-    image: rabbitmq:4.0-management
-    container_name: rabbitmq-picpay
+    image: "__RABBITMQ_IMAGE_URL__" # Placeholder
     ports:
       - "5672:5672"
       - "15672:15672"
+    mem_limit: 512m
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
-    networks:
-      - PicPaySimplifiedNW
-
-  api:
-    image: ${ACR_LOGIN_SERVER}/picpay-api:${IMAGE_TAG}
-    container_name: picpay-api
-    ports:
-      - "8080:8080"
-    environment:
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
-      ConnectionStrings__DefaultConnection: ${MYSQL_CONNECTION_STRING}
-      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPINSIGHTS_CONNECTION_STRING}
-      RabbitMQ__Hostname: rabbitmq
-      RabbitMQ__Port: 5672
-      RabbitMQ__Username: ${RABBITMQ_PASS}
-      RabbitMQ__Password: ${RABBITMQ_USER}
-      RabbitMQ__Exchange: ${EXCHANGE_NAME}
-      RabbitMQ__TransferReceivedQueue: ${RABBITMQ_TRANSFER_RECEIVED_QUEUE}
-    depends_on:
-      - rabbitmq
-    networks:
-      - PicPaySimplifiedNW
-
-networks:
-  PicPaySimplifiedNW:
-    external: true
+      # O Beanstalk também vai injetar estas variáveis aqui
+      - RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS
