@@ -264,6 +264,12 @@ resource "aws_elastic_beanstalk_application" "picpay_app" {
   name = "picpay-challenge-app"
 }
 
+resource "aws_iam_role_policy_attachment" "ecr_read_only_access" {
+  role       = aws_iam_role.beanstalk_ec2_role.name
+  # Esta política concede as permissões necessárias para puxar imagens do ECR
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
 resource "aws_elastic_beanstalk_environment" "picpay_env" {
   name                = "picpay-challenge-env"
   application         = aws_elastic_beanstalk_application.picpay_app.name
