@@ -55,6 +55,12 @@ jobs:
         # O pacote agora contém APENAS o docker-compose.yml e o Dockerfile
         run: zip -r deploy-package.zip docker-compose.deploy.yml Dockerfile
 
+      - name: Upload artifact for debugging
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package
+          path: deploy-package.zip
+
       # --- Passo 3: Fazer o deploy para o Elastic Beanstalk ---
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
