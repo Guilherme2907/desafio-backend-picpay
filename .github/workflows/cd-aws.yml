@@ -74,3 +74,4 @@ jobs:
           deployment_package: deploy-package.zip
           # Opcional, mas bom: aguardar o ambiente ficar saudável
           wait_for_environment_recovery: true
+          use_existing_version_if_available: true
