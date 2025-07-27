@@ -2,14 +2,14 @@
 version: '3.8'
 
 services:
-  # Serviço da sua API .NET
+  # Serviï¿½o da sua API .NET
   picpay-api:
     image: "__API_IMAGE_URL__" # Placeholder que o CD vai substituir
     ports:
       - "80:8080" # Mapeia a porta 80 do Host para a 8080 do container
     mem_limit: 512m
     environment:
-      # O Beanstalk vai injetar as variáveis com estes nomes
+      # O Beanstalk vai injetar as variï¿½veis com estes nomes
       - ASPNETCORE_ENVIRONMENT
       - ConnectionStrings__DefaultConnection
       - APPLICATIONINSIGHTS_CONNECTION_STRING
@@ -22,7 +22,7 @@ services:
     depends_on:
       - rabbitmq
 
-  # Serviço do RabbitMQ
+  # Serviï¿½o do RabbitMQ
   rabbitmq:
     image: "__RABBITMQ_IMAGE_URL__" # Placeholder
     ports:
@@ -30,6 +30,6 @@ services:
       - "15672:15672"
     mem_limit: 512m
     environment:
-      # O Beanstalk também vai injetar estas variáveis aqui
+      # O Beanstalk tambï¿½m vai injetar estas variï¿½veis aqui
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
