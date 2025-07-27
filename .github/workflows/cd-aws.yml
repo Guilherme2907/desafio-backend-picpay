@@ -38,8 +38,8 @@ jobs:
           IMAGE_TAG=${{ github.sha }}
 
           # Construir as URLs completas das imagens
-          API_IMAGE_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/picpay-api:$IMAGE_TAG"
-          RABBITMQ_IMAGE_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/rabbitmq-picpay:$IMAGE_TAG"
+          API_IMAGE_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/picpay-api:latest"
+          RABBITMQ_IMAGE_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/rabbitmq-picpay:latest"
 
           echo "API Image URL: $API_IMAGE_URL"
           echo "RabbitMQ Image URL: $RABBITMQ_IMAGE_URL"
