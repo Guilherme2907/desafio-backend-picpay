@@ -45,15 +45,15 @@ jobs:
           echo "RabbitMQ Image URL: $RABBITMQ_IMAGE_URL"
 
           # Copiar o template para o arquivo final
-          cp docker-compose.yml docker-compose.deploy.yml
+          cp docker-compose.deploy.yml docker-compose.yml
 
           # Substituir os placeholders no arquivo final
-          sed -i "s|__API_IMAGE_URL__|$API_IMAGE_URL|g" docker-compose.deploy.yml
-          sed -i "s|__RABBITMQ_IMAGE_URL__|$RABBITMQ_IMAGE_URL|g" docker-compose.deploy.yml
+          sed -i "s|__API_IMAGE_URL__|$API_IMAGE_URL|g" docker-compose.yml
+          sed -i "s|__RABBITMQ_IMAGE_URL__|$RABBITMQ_IMAGE_URL|g" docker-compose.yml
 
       - name: Gerar pacote de deploy (zip)
         # O pacote agora contém APENAS o docker-compose.yml e o Dockerfile
-        run: zip -r deploy-package.zip docker-compose.deploy.yml Dockerfile
+        run: zip -r deploy-package.zip docker-compose.yml Dockerfile
 
       - name: Upload artifact for debugging
         uses: actions/upload-artifact@v4
