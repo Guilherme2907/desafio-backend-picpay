@@ -75,6 +75,34 @@ internal class Program
 
         var app = builder.Build();
 
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            try
+            {
+                // Pega o DbContext da injeção de dependência
+                var context = services.GetRequiredService<PicPaySimplifiedDbContext>();
+
+                // Pega o logger para registrar o que está acontecendo
+                var logger = services.GetRequiredService<ILogger<Program>>();
+
+                logger.LogInformation("Verificando e aplicando migrations pendentes...");
+
+                // Aplica quaisquer migrations que ainda não foram aplicadas ao banco de dados.
+                // Isso também criará o banco de dados se ele não existir.
+                context.Database.Migrate();
+
+                logger.LogInformation("Migrations aplicadas com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "Ocorreu um erro durante a aplicação das migrations.");
+                // Opcional: você pode decidir se quer parar a aplicação aqui ou não.
+                // Para a maioria dos casos, se a migration falhar, a aplicação não funcionará de qualquer maneira.
+            }
+        }
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
